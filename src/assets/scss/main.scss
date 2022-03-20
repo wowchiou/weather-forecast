@@ -1,4 +1,4 @@
-@import './var';
+@import './_var.scss';
 
 * {
   box-sizing: border-box;
@@ -17,7 +17,8 @@ body {
   font-family: 'Noto Sans TC', sans-serif;
   font-size: 1.6rem;
   font-weight: 400;
-  color: $c-primary;
+  @apply bg-blue-400 dark:bg-gray-900 min-h-screen;
+  transition: all 0.5s;
 }
 
 ul,
@@ -34,5 +35,10 @@ img {
 
 a {
   text-decoration: none;
-  color: $c-primary;
+  color: #fff;
+}
+
+input {
+  appearance: none;
+  @apply rounded-md text-4xl focus:outline-none px-3 pt-2 pb-3 text-white bg-transparent;
 }

@@ -1,24 +1,12 @@
+<script setup></script>
+
 <template>
-  <div id="nav" class="flex justify-center">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
   <router-view />
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '~@/assets/scss/_var.scss';
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.app-container {
+  @apply max-w-3xl w-11/12 m-auto py-5 text-white;
 }
 </style>
