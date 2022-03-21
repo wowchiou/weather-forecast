@@ -1,8 +1,9 @@
 <script setup>
 import { defineProps, computed } from 'vue';
 import { useStore } from 'vuex';
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 import useWeatherPic from '@/utils/useWeatherPic.js';
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
+import WeatherWeekCard from '@/components/WeatherWeekCard';
 
 const props = defineProps({
   city: {
@@ -20,8 +21,16 @@ const cityData = computed(() => {
   );
 });
 
+const cityWeekData = computed(() => {
+  return state.weekWeatherForecast.find(
+    (weatherData) => weatherData.locationName === props.city
+  );
+});
+
 (async () => {
-  await dispatch('fetchWeekWeather');
+  if (!state.weekweatherForecast) {
+    await dispatch('fetchWeekWeather');
+  }
 })();
 
 function getWx(wx) {
@@ -78,7 +87,7 @@ function timeNumber(time) {
         />
       </div>
 
-      <div class="card">
+      <div v-if="cityData" class="card">
         <div class="relative z-10">
           <div class="pt-4 px-4 text-left">
             <p
@@ -123,6 +132,8 @@ function timeNumber(time) {
           </PerfectScrollbar>
         </div>
       </div>
+
+      <WeatherWeekCard v-if="cityWeekData" :cityWeekData="cityWeekData" />
     </div>
   </div>
 </template>

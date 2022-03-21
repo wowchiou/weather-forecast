@@ -1,7 +1,23 @@
 <script setup>
+import { defineProps } from 'vue';
 import useWeatherPic from '@/utils/useWeatherPic.js';
 
-const { setWeatherPic } = useWeatherPic();
+const props = defineProps({
+  cityWeekData: {
+    type: Object,
+    required: true,
+  },
+});
+
+const { setWeatherPic, setWeekDay, setTemperatureBar } = useWeatherPic();
+
+function getElement(el, timeIndex) {
+  if (typeof timeIndex === 'undefined') {
+    return props.cityWeekData.weatherElement[el];
+  } else {
+    return props.cityWeekData.weatherElement[el].time[timeIndex];
+  }
+}
 </script>
 
 <template>
@@ -12,23 +28,70 @@ const { setWeatherPic } = useWeatherPic();
       </div>
       <ul>
         <li
-          v-for="index in 7"
-          :key="`week${index}`"
+          v-for="(time, timeIndex) in cityWeekData.weatherElement['T'].time"
+          :key="`week${timeIndex}`"
           class="flex justify-between items-center p-4 font-bold text-3xl"
         >
-          <p class="w-1/5 text-left">今天</p>
-          <div class="w-1/5">
-            <div class="w-1/2">
+          <p class="w-['30%'] text-left text-2xl">
+            <span>{{ setWeekDay(time.startTime).day }}</span>
+            <span class="ml-2">{{ setWeekDay(time.startTime).status }}</span>
+          </p>
+          <div class="w-1/3 px-2">
+            <div class="w-full mx-auto">
               <div class="h-10 mb-1">
-                <img class="h-full" :src="setWeatherPic('01')" alt="" />
+                <img
+                  class="h-full"
+                  :src="
+                    setWeatherPic(
+                      getElement('Wx', timeIndex).elementValue[1].value
+                    )
+                  "
+                />
               </div>
-              <p class="text-2xl text-gray-100">70%</p>
+              <p class="text-2xl text-gray-100">
+                <span
+                  v-if="
+                    getElement('PoP12h', timeIndex).elementValue[0].value.trim()
+                  "
+                >
+                  {{ getElement('PoP12h', timeIndex).elementValue[0].value }}%
+                </span>
+                <span v-else>
+                  {{ getElement('Wx', timeIndex).elementValue[0].value }}
+                </span>
+              </p>
             </div>
           </div>
-          <div class="flex items-center flex-1">
-            <p class="opacity-60">18&#8451;</p>
-            <div class="flex-1 mx-3 h-2 bg-gray-100 rounded-full"></div>
-            <p>27&#8451;</p>
+          <div class="flex items-center flex-1 text-2xl">
+            <p class="opacity-60">
+              {{ getElement('MinT', timeIndex).elementValue[0].value }}&#8451;
+            </p>
+            <div
+              class="relative flex-1 mx-3 h-2 bg-gray-100 rounded-full overflow-hidden"
+            >
+              <span
+                class="absolute h-full top-0 left-3 bg-yellow-400 rounded-full"
+                :style="{
+                  width: `${
+                    setTemperatureBar(
+                      getElement('MaxT'),
+                      getElement('MinT'),
+                      timeIndex
+                    ).width
+                  }%`,
+                  left: `${
+                    setTemperatureBar(
+                      getElement('MaxT'),
+                      getElement('MinT'),
+                      timeIndex
+                    ).left
+                  }%`,
+                }"
+              ></span>
+            </div>
+            <p>
+              {{ getElement('MaxT', timeIndex).elementValue[0].value }}&#8451;
+            </p>
           </div>
         </li>
       </ul>

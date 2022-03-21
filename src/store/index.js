@@ -8,7 +8,8 @@ const createVuexStore = (initialState) => {
         day: 0,
         night: 0,
       },
-      weatherForecast: null,
+      weatherForecast: [],
+      weekWeatherForecast: [],
     },
     initialState
   );
@@ -22,27 +23,27 @@ const createVuexStore = (initialState) => {
     SET_WEATHER_FORECAST(state, weatherData) {
       state.weatherForecast = weatherData;
     },
+    SET_WEEK_WEATHER_FORECAST(state, weatherData) {
+      state.weekWeatherForecast = weatherData;
+    },
   };
 
   const actions = {
     fetchWeatherForecast({ commit }) {
       return Http.getWeatherForecast().then((res) => {
-        const newWeatherData = res.data.records.locations[0].location.map(
-          (itm) => {
-            let newWeatherElement = {};
-            itm.weatherElement.forEach((el) => {
-              newWeatherElement[el.elementName] = el;
-            });
-            return { ...itm, weatherElement: newWeatherElement };
-          }
+        const newWeatherData = formateWeatherData(
+          res.data.records.locations[0].location
         );
         commit('SET_WEATHER_FORECAST', newWeatherData);
       });
     },
 
-    fetchWeekWeather() {
+    fetchWeekWeather({ commit }) {
       return Http.getWeekWeather().then((res) => {
-        console.log(res.data);
+        const newWeatherData = formateWeatherData(
+          res.data.records.locations[0].location
+        );
+        commit('SET_WEEK_WEATHER_FORECAST', newWeatherData);
       });
     },
 
@@ -78,6 +79,16 @@ const createVuexStore = (initialState) => {
 
   return createStore(store);
 };
+
+function formateWeatherData(data) {
+  return data.map((itm) => {
+    let newWeatherElement = {};
+    itm.weatherElement.forEach((el) => {
+      newWeatherElement[el.elementName] = el;
+    });
+    return { ...itm, weatherElement: newWeatherElement };
+  });
+}
 
 export default createVuexStore();
 export { createVuexStore };
