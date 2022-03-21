@@ -1,76 +1,127 @@
 <script setup>
-function getWeatherPicURL(index) {
-  let picIndex = index < 10 ? `0${index}` : index;
-  return `https://www.cwb.gov.tw/V8/assets/img/weather_icons/weathers/svg_icon/day/${picIndex}.svg`;
+import { defineProps, computed } from 'vue';
+import { useStore } from 'vuex';
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
+import useWeatherPic from '@/utils/useWeatherPic.js';
+
+const props = defineProps({
+  city: {
+    type: String,
+    required: true,
+  },
+});
+
+const { state, dispatch } = useStore();
+const { setWeatherPic } = useWeatherPic();
+
+const cityData = computed(() => {
+  return state.weatherForecast.find(
+    (weatherData) => weatherData.locationName === props.city
+  );
+});
+
+(async () => {
+  await dispatch('fetchWeekWeather');
+})();
+
+function getWx(wx) {
+  const wxResult = wx.time.find((time) => {
+    return timeNumber(time.startTime) <= Date.now() < timeNumber(time.endTime);
+  });
+  return wxResult.elementValue;
+}
+
+function getT(t) {
+  const tResult = t.time.find((time) => {
+    return timeNumber(time.dataTime) > Date.now();
+  });
+  return tResult.elementValue[0].value;
+}
+
+function getPoP6h(pop6h) {
+  const pop6hResult = pop6h.time.find((time) => {
+    return timeNumber(time.startTime) <= Date.now() < timeNumber(time.endTime);
+  });
+  return pop6hResult.elementValue[0].value;
+}
+
+function getWeatherDescription(wd) {
+  const wdResult = wd.time.find((time) => {
+    return timeNumber(time.startTime) <= Date.now() < timeNumber(time.endTime);
+  });
+  return wdResult.elementValue[0].value;
+}
+
+function timeNumber(time) {
+  return new Date(time).getTime();
 }
 </script>
 
 <template>
-  <div class="app-container text-center">
-    <div class="summary">
-      <div class="text-5xl font-bold">板橋區</div>
-      <div class="text-7xl font-bold mt-2">26&#8451;</div>
-      <div class="mt-4">多雲時晴</div>
-      <div class="flex justify-center items-center mt-2">
-        <span>最高29&#8451;</span>
-        <span class="ml-4">最低21&#8451;</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="relative z-10">
-        <div class="pt-4 px-4 text-left">
-          <p class="pb-4 border-b border-gray-100">預計大約下午8時居部多雲。</p>
+  <div class="weather text-center">
+    <div class="relative z-10">
+      <div class="m-10 relative text-5xl font-bold">
+        <div class="text-5xl">{{ city }}</div>
+        <div class="text-7xl mt-2">
+          {{ getT(cityData.weatherElement['T']) }}&#8451;
         </div>
-        <div class="overflow-x-auto pb-4">
-          <ul class="whitespace-nowrap">
-            <li
-              v-for="index in 24"
-              :key="`today${index}`"
-              class="w-auto inline-block p-4"
-            >
-              <p><span class="text-sm">下午</span>19:00</p>
-              <div class="h-10 mt-2">
-                <img
-                  class="block h-full w-auto m-auto"
-                  :src="getWeatherPicURL(index)"
-                  alt=""
-                />
-              </div>
-              <p class="mt-2">22&#8451;</p>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mt-10">
-      <div class="relative z-10">
-        <div class="pt-4 px-4 text-left">
-          <p class="pb-4 border-b border-gray-100">7天天氣預報</p>
-        </div>
-        <ul>
-          <li
-            v-for="index in 7"
-            :key="`week${index}`"
-            class="flex justify-between items-center p-4 font-bold text-3xl"
+        <div class="mt-4 text-4xl">
+          <span>{{ getWx(cityData.weatherElement.Wx)[0].value }}</span>
+          <span class="ml-4 text-yellow-400"
+            >{{ getPoP6h(cityData.weatherElement.PoP6h) }}%</span
           >
-            <p class="w-1/5 text-left">今天</p>
-            <div class="w-1/5">
-              <div class="w-1/2">
-                <div class="h-10 mb-1">
-                  <img class="h-full" :src="getWeatherPicURL(index)" alt="" />
+        </div>
+        <img
+          class="absolute w-1/4 -top-5 right-5 z-0"
+          :src="setWeatherPic(getWx(cityData.weatherElement.Wx)[1].value)"
+          alt=""
+        />
+      </div>
+
+      <div class="card">
+        <div class="relative z-10">
+          <div class="pt-4 px-4 text-left">
+            <p
+              class="pb-4 border-b border-gray-100 text-gray-200 dark:text-gray-400"
+            >
+              {{
+                getWeatherDescription(
+                  cityData.weatherElement.WeatherDescription
+                )
+              }}
+            </p>
+          </div>
+          <PerfectScrollbar class="pb-4">
+            <ul class="whitespace-nowrap">
+              <li
+                v-for="(time, timeIndex) in cityData.weatherElement.Wx.time"
+                :key="`today${timeIndex}`"
+                class="w-auto inline-block p-4"
+              >
+                <p class="text-2xl">
+                  <span>{{ new Date(time.startTime).getMonth() + 1 }}月</span
+                  ><span>{{ new Date(time.startTime).getDate() }}日</span>
+                </p>
+                <p class="text-2xl">
+                  <span>{{ new Date(time.startTime).getHours() }}:00</span> -
+                  <span>{{ new Date(time.endTime).getHours() }}:00</span>
+                </p>
+                <div class="h-10 mt-2">
+                  <img
+                    class="block h-full w-auto m-auto"
+                    :src="setWeatherPic(time.elementValue[1].value)"
+                  />
                 </div>
-                <p class="text-2xl text-gray-100">70%</p>
-              </div>
-            </div>
-            <div class="flex items-center flex-1">
-              <p class="opacity-60">18&#8451;</p>
-              <div class="flex-1 mx-3 h-2 bg-gray-100 rounded-full"></div>
-              <p>27&#8451;</p>
-            </div>
-          </li>
-        </ul>
+                <p class="mt-2">
+                  {{
+                    cityData.weatherElement['T'].time[timeIndex].elementValue[0]
+                      .value
+                  }}&#8451;
+                </p>
+              </li>
+            </ul>
+          </PerfectScrollbar>
+        </div>
       </div>
     </div>
   </div>
@@ -78,17 +129,4 @@ function getWeatherPicURL(index) {
 
 <style lang="scss" scoped>
 @import './Weather.scss';
-.summary {
-  @apply my-10;
-}
-
-.card {
-  @apply relative rounded-md overflow-hidden;
-  &::after {
-    @apply absolute w-full h-full top-0 left-0 z-0;
-    content: '';
-    background-color: rgba(255, 255, 255, 0.1);
-    filter: blur(10px);
-  }
-}
 </style>

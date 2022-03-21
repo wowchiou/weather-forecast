@@ -11,10 +11,20 @@ const axiosWeather = axios.create({
   },
 });
 
+// F-C0032-001 => 36小時
+// F-D0047-089 => 台灣未來2天
+// F-D0047-001 => 宜蘭未來2天及1周預報
+// O-A0001-001 => 氣象觀測資料 X
+
 export default {
   getWeatherForecast() {
     return axiosWeather.get(
-      `/v1/rest/datastore/O-A0001-001?Authorization=${API_KEY}`
+      `/v1/rest/datastore/F-D0047-089?Authorization=${API_KEY}`
+    );
+  },
+  getWeekWeather() {
+    return axiosWeather.get(
+      `/v1/rest/datastore/F-D0047-091?Authorization=${API_KEY}`
     );
   },
   getSunrise(date) {

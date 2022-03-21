@@ -1,4 +1,19 @@
 @import '~@/assets/scss/_var.scss';
 
-.appSwitch {
+.switch-btn {
+  user-select: none;
+  @apply relative w-16 h-8 bg-gray-100 rounded-full cursor-pointer;
+  &.active {
+    .ball {
+      left: auto;
+      @apply right-1 bg-gray-600;
+    }
+  }
+}
+
+.ball {
+  transform: translate(0, -50%);
+  transition: 0.3s;
+  @apply absolute w-7 h-7 rounded-full bg-gray-400 top-1/2
+      left-1;
 }

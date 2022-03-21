@@ -8,29 +8,44 @@ const createVuexStore = (initialState) => {
         day: 0,
         night: 0,
       },
+      weatherForecast: null,
     },
     initialState
   );
 
-  const getters = {
-    darkMode(state) {
-      const date = Date.now();
-      return date >= state.sunrise.night || date < state.sunrise.day;
-    },
-  };
+  const getters = {};
 
   const mutations = {
     SET_SUNRISE(state, sunData) {
       state.sunrise = sunData;
     },
+    SET_WEATHER_FORECAST(state, weatherData) {
+      state.weatherForecast = weatherData;
+    },
   };
 
   const actions = {
-    fetchWeatherForecast() {
+    fetchWeatherForecast({ commit }) {
       return Http.getWeatherForecast().then((res) => {
+        const newWeatherData = res.data.records.locations[0].location.map(
+          (itm) => {
+            let newWeatherElement = {};
+            itm.weatherElement.forEach((el) => {
+              newWeatherElement[el.elementName] = el;
+            });
+            return { ...itm, weatherElement: newWeatherElement };
+          }
+        );
+        commit('SET_WEATHER_FORECAST', newWeatherData);
+      });
+    },
+
+    fetchWeekWeather() {
+      return Http.getWeekWeather().then((res) => {
         console.log(res.data);
       });
     },
+
     fetchSunrise({ commit }) {
       const date = new Date();
       const year = date.getFullYear();
