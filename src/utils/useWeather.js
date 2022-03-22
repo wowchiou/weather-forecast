@@ -14,15 +14,15 @@ export default function useWeather() {
 
   function setWeekDay(time) {
     let status;
-    const timeDate = new Date(time).getDate();
-    const day = timeDate === new Date().getDate() ? '今日' : `${timeDate}日`;
-    const hours = new Date(time).getHours();
+    const date = getWeatherTime(time);
+    const day = date.day === new Date().getDate() ? '今日' : `${date.day}日`;
+    const hours = date.hours;
     if (0 <= hours && hours < 6) {
       status = '凌晨';
     } else if (6 <= hours && hours < 18) {
-      status = '早上';
+      status = '白天';
     } else {
-      status = '晚上';
+      status = '夜晚';
     }
     return { day, status };
   }
@@ -41,5 +41,34 @@ export default function useWeather() {
     return { left, width: width ? width : 10 };
   }
 
-  return { setWeatherPic, setWeekDay, setTemperatureBar, isDay };
+  function getWeatherData(city, dataName, valueIndex) {
+    const cityData = state.weatherForecast.find(
+      (itm) => itm.locationName === city
+    );
+    if (!valueIndex) {
+      return cityData.weatherElement[dataName].time[0].elementValue[0].value;
+    } else {
+      return cityData.weatherElement[dataName].time[0].elementValue[valueIndex]
+        .value;
+    }
+  }
+
+  function getWeatherTime(time) {
+    const date = new Date(time);
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+      hours: date.getHours(),
+    };
+  }
+
+  return {
+    setWeatherPic,
+    setWeekDay,
+    setTemperatureBar,
+    getWeatherData,
+    getWeatherTime,
+    isDay,
+  };
 }

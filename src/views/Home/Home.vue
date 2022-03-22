@@ -8,7 +8,7 @@ import CitySelector from '@/components/CitySelector';
 import AppIcon from '@/components/AppIcon';
 
 const { state } = useStore();
-const { setWeatherPic } = useWeather();
+const { setWeatherPic, getWeatherData } = useWeather();
 
 const isEdit = ref(false);
 const cities = ref(localStorage.getItem(WEATHER_CITY));
@@ -27,13 +27,6 @@ function removeCity(cityIndex) {
     localStorage.setItem(WEATHER_CITY, city.join('/'));
     cities.value = city.join('/');
   }
-}
-
-function getCityData(city) {
-  const cityData = state.weatherForecast.find(
-    (itm) => itm.locationName === city
-  );
-  return cityData.weatherElement;
 }
 </script>
 
@@ -68,33 +61,23 @@ function getCityData(city) {
                 <p class="text-4xl">
                   <span>{{ city }}</span>
                 </p>
-                <p class="text-6xl">
-                  {{
-                    getCityData(city)['T'].time[0].elementValue[0].value
-                  }}&#8451;
-                </p>
+                <p class="text-6xl">{{ getWeatherData(city, 'T') }}&#8451;</p>
               </div>
               <div class="flex justify-between items-center mt-5">
                 <p class="flex justify-start items-center">
                   <span class="w-14 h-14 mr-2 flex justify-start items-center"
                     ><img
                       class="m-h-11/12 m-w-11/12 w-full h-hull"
-                      :src="
-                        setWeatherPic(
-                          getCityData(city)['Wx'].time[0].elementValue[1].value
-                        )
-                      "
+                      :src="setWeatherPic(getWeatherData(city, 'Wx', 1))"
                       alt=""
                   /></span>
                   <span>
-                    {{ getCityData(city)['Wx'].time[0].elementValue[0].value }}
+                    {{ getWeatherData(city, 'Wx') }}
                   </span>
                 </p>
                 <p class="text-3xl">
                   降雨率
-                  {{
-                    getCityData(city)['PoP6h'].time[0].elementValue[0].value
-                  }}%
+                  {{ getWeatherData(city, 'PoP6h') }}%
                 </p>
               </div>
             </div>

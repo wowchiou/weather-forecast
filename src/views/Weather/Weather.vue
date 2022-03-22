@@ -13,7 +13,7 @@ const props = defineProps({
 });
 
 const { state, dispatch } = useStore();
-const { setWeatherPic } = useWeather();
+const { setWeatherPic, getWeatherData, getWeatherTime } = useWeather();
 
 const cityData = computed(() => {
   return state.weatherForecast.find(
@@ -28,42 +28,10 @@ const cityWeekData = computed(() => {
 });
 
 (async () => {
-  if (!state.weekweatherForecast) {
+  if (state.weekWeatherForecast.length === 0) {
     await dispatch('fetchWeekWeather');
   }
 })();
-
-function getWx(wx) {
-  const wxResult = wx.time.find((time) => {
-    return timeNumber(time.startTime) <= Date.now() < timeNumber(time.endTime);
-  });
-  return wxResult.elementValue;
-}
-
-function getT(t) {
-  const tResult = t.time.find((time) => {
-    return timeNumber(time.dataTime) > Date.now();
-  });
-  return tResult.elementValue[0].value;
-}
-
-function getPoP6h(pop6h) {
-  const pop6hResult = pop6h.time.find((time) => {
-    return timeNumber(time.startTime) <= Date.now() < timeNumber(time.endTime);
-  });
-  return pop6hResult.elementValue[0].value;
-}
-
-function getWeatherDescription(wd) {
-  const wdResult = wd.time.find((time) => {
-    return timeNumber(time.startTime) <= Date.now() < timeNumber(time.endTime);
-  });
-  return wdResult.elementValue[0].value;
-}
-
-function timeNumber(time) {
-  return new Date(time).getTime();
-}
 </script>
 
 <template>
@@ -71,19 +39,16 @@ function timeNumber(time) {
     <div class="relative z-10">
       <div class="m-10 relative text-5xl font-bold">
         <div class="text-5xl">{{ city }}</div>
-        <div class="text-7xl mt-2">
-          {{ getT(cityData.weatherElement['T']) }}&#8451;
-        </div>
+        <div class="text-7xl mt-2">{{ getWeatherData(city, 'T') }}&#8451;</div>
         <div class="mt-4 text-4xl">
-          <span>{{ getWx(cityData.weatherElement.Wx)[0].value }}</span>
+          <span>{{ getWeatherData(city, 'Wx') }}</span>
           <span class="ml-4 text-yellow-400"
-            >{{ getPoP6h(cityData.weatherElement.PoP6h) }}%</span
+            >{{ getWeatherData(city, 'PoP6h') }}%</span
           >
         </div>
         <img
           class="absolute w-1/4 -top-5 right-5 z-0"
-          :src="setWeatherPic(getWx(cityData.weatherElement.Wx)[1].value)"
-          alt=""
+          :src="setWeatherPic(getWeatherData(city, 'Wx', 1))"
         />
       </div>
 
@@ -93,11 +58,7 @@ function timeNumber(time) {
             <p
               class="pb-4 border-b border-gray-100 text-gray-200 dark:text-gray-400"
             >
-              {{
-                getWeatherDescription(
-                  cityData.weatherElement.WeatherDescription
-                )
-              }}
+              {{ getWeatherData(city, 'WeatherDescription') }}
             </p>
           </div>
           <PerfectScrollbar class="pb-4">
@@ -108,12 +69,12 @@ function timeNumber(time) {
                 class="w-auto inline-block p-4"
               >
                 <p class="text-2xl">
-                  <span>{{ new Date(time.startTime).getMonth() + 1 }}月</span
-                  ><span>{{ new Date(time.startTime).getDate() }}日</span>
+                  <span>{{ getWeatherTime(time.startTime).month }}月</span
+                  ><span>{{ getWeatherTime(time.startTime).day }}日</span>
                 </p>
                 <p class="text-2xl">
-                  <span>{{ new Date(time.startTime).getHours() }}:00</span> -
-                  <span>{{ new Date(time.endTime).getHours() }}:00</span>
+                  <span>{{ getWeatherTime(time.startTime).hours }}:00</span> -
+                  <span>{{ getWeatherTime(time.endTime).hours }}:00</span>
                 </p>
                 <div class="h-10 mt-2">
                   <img
