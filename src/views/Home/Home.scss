@@ -18,13 +18,22 @@ ul {
   transition: 0.3s;
   @apply w-0 overflow-hidden -translate-x-full opacity-0 cursor-pointer;
 }
+
+.remove-icon {
+  @apply bg-red-600 w-10 h-10 mx-auto flex justify-center items-center rounded-full;
+}
+
 .drag-btn {
   transition: 0.3s;
-  @apply w-0 overflow-hidden translate-x-full opacity-0 cursor-pointer;
+  @apply w-0 overflow-hidden translate-x-full opacity-0 cursor-move;
 }
+
+.drag-icon {
+  @apply w-10 h-10 mx-auto flex justify-center items-center hover:text-gray-300;
+}
+
 .weather-list {
   @apply rounded-md relative overflow-hidden mt-4 flex justify-center items-center;
-  transition: 0.3s;
   &:first-child {
     margin-top: 0;
   }

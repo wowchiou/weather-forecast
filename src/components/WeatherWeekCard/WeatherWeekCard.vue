@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps } from 'vue';
-import useWeatherPic from '@/utils/useWeatherPic.js';
+import useWeather from '@/utils/useWeather.js';
 
 const props = defineProps({
   cityWeekData: {
@@ -9,7 +9,7 @@ const props = defineProps({
   },
 });
 
-const { setWeatherPic, setWeekDay, setTemperatureBar } = useWeatherPic();
+const { setWeatherPic, setWeekDay, setTemperatureBar } = useWeather();
 
 function getElement(el, timeIndex) {
   if (typeof timeIndex === 'undefined') {
@@ -63,7 +63,7 @@ function getElement(el, timeIndex) {
             </div>
           </div>
           <div class="flex items-center flex-1 text-2xl">
-            <p class="opacity-60">
+            <p class="text-blue-500 opacity-90">
               {{ getElement('MinT', timeIndex).elementValue[0].value }}&#8451;
             </p>
             <div
@@ -89,7 +89,7 @@ function getElement(el, timeIndex) {
                 }"
               ></span>
             </div>
-            <p>
+            <p class="text-red-500 opacity-80">
               {{ getElement('MaxT', timeIndex).elementValue[0].value }}&#8451;
             </p>
           </div>

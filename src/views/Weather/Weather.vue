@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, computed } from 'vue';
 import { useStore } from 'vuex';
-import useWeatherPic from '@/utils/useWeatherPic.js';
+import useWeather from '@/utils/useWeather.js';
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 import WeatherWeekCard from '@/components/WeatherWeekCard';
 
@@ -13,7 +13,7 @@ const props = defineProps({
 });
 
 const { state, dispatch } = useStore();
-const { setWeatherPic } = useWeatherPic();
+const { setWeatherPic } = useWeather();
 
 const cityData = computed(() => {
   return state.weatherForecast.find(

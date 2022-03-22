@@ -1,17 +1,16 @@
 <script setup>
 import { ref } from 'vue';
 import { useStore } from 'vuex';
-// import useWeatherPic from '@/utils/useWeatherPic';
+import { WEATHER_DARK_MODE } from '@/storage.js';
 
 import AppIcon from '@/components/AppIcon';
 import AppSwitch from '@/components/AppSwitch';
 
 const { state, dispatch } = useStore();
-// const { isDark } = useWeatherPic;
 const dark = ref(false);
 
 (async () => {
-  const localDark = localStorage.getItem('dark-mode');
+  const localDark = localStorage.getItem(WEATHER_DARK_MODE);
   if (!localDark) {
     await dispatch('fetchSunrise');
     const date = Date.now();
@@ -26,8 +25,8 @@ function toggleDark() {
   dark.value = !dark.value;
   setDarkMode(dark.value);
   dark.value
-    ? localStorage.setItem('dark-mode', 'on')
-    : localStorage.setItem('dark-mode', 'off');
+    ? localStorage.setItem(WEATHER_DARK_MODE, 'on')
+    : localStorage.setItem(WEATHER_DARK_MODE, 'off');
 }
 
 function setDarkMode(dark) {

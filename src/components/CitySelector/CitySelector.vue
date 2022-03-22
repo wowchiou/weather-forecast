@@ -2,24 +2,28 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import AppIcon from '@/components/AppIcon';
+import { WEATHER_CITY } from '@/storage.js';
 
 const { state } = useStore();
 const router = useRouter();
 const cities = computed(() => state.weatherForecast);
 
 function handleCityChange(e) {
-  if (!e.target.value) return;
-  router.push({ name: 'weather', params: { city: e.target.value } });
+  const target = e.target.value;
+  if (!target) return;
+  const weatherCity = localStorage.getItem(WEATHER_CITY);
+  if (!weatherCity) {
+    localStorage.setItem(WEATHER_CITY, target);
+  } else if (weatherCity.indexOf(target) === -1) {
+    localStorage.setItem(WEATHER_CITY, `${weatherCity}/${target}`);
+  }
+  router.push({ name: 'weather', params: { city: target } });
 }
 </script>
 
 <template>
   <div class="input-wrap">
-    <div class="flex items-center justify-center pl-1">
-      <AppIcon class="text-5xl" icon="search" />
-    </div>
-    <select class="flex-1" type="text" @change="handleCityChange">
+    <select class="flex-1 text-3xl text-center" @change="handleCityChange">
       <option value="">-- 請選擇城市 --</option>
       <option
         v-for="city in cities"

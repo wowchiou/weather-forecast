@@ -1,0 +1,2 @@
+export const WEATHER_DARK_MODE = 'WEATHER_DARK_MODE';
+export const WEATHER_CITY = 'WEATHER_CITY';
