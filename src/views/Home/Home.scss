@@ -5,67 +5,6 @@
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-ul {
-  &.active {
-    .remove-btn,
-    .drag-btn {
-      @apply w-20 translate-x-0 opacity-100;
-    }
-  }
-}
-
-.remove-btn {
-  transition: 0.3s;
-  @apply w-0 overflow-hidden -translate-x-full opacity-0 cursor-pointer;
-}
-
-.remove-icon {
-  @apply bg-red-600 w-10 h-10 mx-auto flex justify-center items-center rounded-full;
-}
-
-.drag-btn {
-  transition: 0.3s;
-  @apply w-0 overflow-hidden translate-x-full opacity-0 cursor-move;
-}
-
-.drag-icon {
-  @apply w-10 h-10 mx-auto flex justify-center items-center hover:text-gray-300;
-}
-
-.weather-list {
-  @apply rounded-md relative overflow-hidden mt-4 flex justify-center items-center;
-  &:first-child {
-    margin-top: 0;
-  }
-  a {
-    @apply relative w-full px-5 py-6 z-10 font-bold;
-    text-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
-    &::after {
-      content: '';
-      @apply absolute w-full h-full top-0 left-0 bg-right-bottom z-0;
-      background-image: url(~@/assets/images/sky-1.jpeg);
-      background-size: auto 500%;
-      background-repeat: no-repeat;
-      filter: contrast(90%);
-      opacity: 0.5;
-      animation: float-left 1000s infinite alternate linear;
-    }
-  }
-}
-
-.dark .weather-list a::after {
-  background-image: url(~@/assets/images/sky-night-2.jpg);
-}
-
-@keyframes float-left {
-  from {
-    background-position: bottom left;
-  }
-  to {
-    background-position: bottom right;
-  }
-}
-
 .edit-btn {
   @apply fixed flex justify-center items-center w-20 h-20 rounded-full bottom-5 right-5 cursor-pointer z-20;
   &.active {

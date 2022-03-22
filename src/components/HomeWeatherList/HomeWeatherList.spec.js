@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { createVuexStore } from '@/store';
 import { routes } from '@/router';
-import HomeWeatherCard from './HomeWeatherCard.vue';
+import HomeWeatherList from './HomeWeatherList.vue';
 
 const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),
@@ -13,7 +13,7 @@ function mountComponent(config = {}) {
   config.mountOptions = config.mountOptions || {};
   config.plugins = config.plugins || {};
   const store = config.store || createVuexStore();
-  return mount(HomeWeatherCard, {
+  return mount(HomeWeatherList, {
     global: {
       plugins: [store, router],
     },
@@ -23,12 +23,12 @@ function mountComponent(config = {}) {
 
 let wrapper;
 
-describe('HomeWeatherCard', () => {
+describe('HomeWeatherList', () => {
   beforeEach(() => {
     wrapper = mountComponent();
   });
 
-  it('HomeWeatherCard is exist', () => {
+  it('HomeWeatherList is exist', () => {
     expect(true).toBe(true);
   });
 });

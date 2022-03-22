@@ -3,16 +3,19 @@ import { useStore } from 'vuex';
 export default function useWeather() {
   const { state } = useStore();
 
-  const isDay =
-    state.sunrise.day <= Date.now() && Date.now() < state.sunrise.night;
-
-  const timeText = isDay ? 'night' : 'day';
-
-  function setWeatherPic(index) {
-    return `https://www.cwb.gov.tw/V8/assets/img/weather_icons/weathers/svg_icon/${timeText}/${index}.svg`;
+  function getWeatherPic(picIndex, status) {
+    const isDay =
+      state.sunrise.day <= Date.now() && Date.now() < state.sunrise.night;
+    let timeText = isDay ? 'day' : 'night';
+    if ((status && status === '凌晨') || status === '夜晚') {
+      timeText = 'night';
+    } else if (status && status === '白天') {
+      timeText = 'day';
+    }
+    return `https://www.cwb.gov.tw/V8/assets/img/weather_icons/weathers/svg_icon/${timeText}/${picIndex}.svg`;
   }
 
-  function setWeekDay(time) {
+  function getDayStatus(time) {
     let status;
     const date = getWeatherTime(time);
     const day = date.day === new Date().getDate() ? '今日' : `${date.day}日`;
@@ -27,7 +30,7 @@ export default function useWeather() {
     return { day, status };
   }
 
-  function setTemperatureBar(max, min, timeIndex) {
+  function getTemperatureBar(max, min, timeIndex) {
     const maxT = Math.max(
       ...max.time.map((t) => Number(t.elementValue[0].value))
     );
@@ -64,11 +67,10 @@ export default function useWeather() {
   }
 
   return {
-    setWeatherPic,
-    setWeekDay,
-    setTemperatureBar,
+    getWeatherPic,
+    getDayStatus,
+    getTemperatureBar,
     getWeatherData,
     getWeatherTime,
-    isDay,
   };
 }

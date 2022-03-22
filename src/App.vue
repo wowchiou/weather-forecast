@@ -11,7 +11,9 @@ const { dispatch } = useStore();
 <template>
   <div class="max-w-3xl w-11/12 m-auto pt-5 pb-20 text-white">
     <AppHeader />
-    <router-view />
+    <transition name="fade" mode="out-in">
+      <router-view />
+    </transition>
   </div>
 </template>
 

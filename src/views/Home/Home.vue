@@ -1,92 +1,28 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { WEATHER_CITY } from '@/storage.js';
-import useWeather from '@/utils/useWeather.js';
 
-import CitySelector from '@/components/CitySelector';
 import AppIcon from '@/components/AppIcon';
+import CitySelector from '@/components/CitySelector';
+import HomeWeatherList from '@/components/HomeWeatherList';
 
 const { state } = useStore();
-const { setWeatherPic, getWeatherData } = useWeather();
-
 const isEdit = ref(false);
-const cities = ref(localStorage.getItem(WEATHER_CITY));
 
-function toggleEdit() {
-  isEdit.value = !isEdit.value;
-}
-
-function removeCity(cityIndex) {
-  const city = cities.value.split('/');
-  city.splice(cityIndex, 1);
-  if (city.length === 0) {
-    localStorage.removeItem(WEATHER_CITY);
-    cities.value = null;
-  } else {
-    localStorage.setItem(WEATHER_CITY, city.join('/'));
-    cities.value = city.join('/');
-  }
-}
+const hasWeatherData = computed(
+  () => localStorage.getItem(WEATHER_CITY) && state.weatherForecast.length !== 0
+);
 </script>
 
 <template>
   <div class="home">
     <div class="mt-5">
       <CitySelector />
-
-      <p
-        v-if="!cities || state.weatherForecast.length === 0"
-        class="mt-5 text-3xl text-center text-yellow-400"
-      >
-        請選擇城市
-      </p>
-
-      <ul v-else class="mt-5" :class="{ active: isEdit }">
-        <li
-          class="weather-list"
-          v-for="(city, cityIndex) in cities.split('/')"
-          :key="city"
-        >
-          <div class="remove-btn">
-            <AppIcon
-              icon="remove"
-              class="remove-icon"
-              @click="removeCity(cityIndex)"
-            />
-          </div>
-          <router-link :to="{ name: 'weather', params: { city } }">
-            <div class="relative z-10">
-              <div class="flex justify-between items-end">
-                <p class="text-4xl">
-                  <span>{{ city }}</span>
-                </p>
-                <p class="text-6xl">{{ getWeatherData(city, 'T') }}&#8451;</p>
-              </div>
-              <div class="flex justify-between items-center mt-5">
-                <p class="flex justify-start items-center">
-                  <span class="w-14 h-14 mr-2 flex justify-start items-center"
-                    ><img
-                      class="m-h-11/12 m-w-11/12 w-full h-hull"
-                      :src="setWeatherPic(getWeatherData(city, 'Wx', 1))"
-                      alt=""
-                  /></span>
-                  <span>
-                    {{ getWeatherData(city, 'Wx') }}
-                  </span>
-                </p>
-                <p class="text-3xl">
-                  降雨率
-                  {{ getWeatherData(city, 'PoP6h') }}%
-                </p>
-              </div>
-            </div>
-          </router-link>
-        </li>
-      </ul>
+      <p v-if="!hasWeatherData" class="empty-text">請選擇城市</p>
+      <HomeWeatherList v-else :isEdit="isEdit" />
     </div>
-
-    <div class="edit-btn" :class="{ active: isEdit }" @click="toggleEdit">
+    <div class="edit-btn" :class="{ active: isEdit }" @click="isEdit = !isEdit">
       <AppIcon class="text-5xl" icon="edit" />
     </div>
   </div>
@@ -94,4 +30,7 @@ function removeCity(cityIndex) {
 
 <style lang="scss" scoped>
 @import './Home.scss';
+.empty-text {
+  @apply mt-5 text-3xl text-center text-yellow-400;
+}
 </style>
