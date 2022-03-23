@@ -28,7 +28,8 @@ ul {
 }
 
 .weather-list {
-  @apply rounded-md relative overflow-hidden mt-4 flex justify-center items-center;
+  @apply rounded-md relative overflow-hidden mt-4 flex
+    justify-center items-center;
   &:first-child {
     margin-top: 0;
   }

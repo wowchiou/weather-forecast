@@ -12,7 +12,7 @@ const props = defineProps({
   },
 });
 
-const { state, dispatch } = useStore();
+const { state } = useStore();
 
 const cityData = computed(() => {
   return state.weatherForecast.find(
@@ -25,12 +25,6 @@ const cityWeekData = computed(() => {
     (weatherData) => weatherData.locationName === props.city
   );
 });
-
-(async () => {
-  if (state.weekWeatherForecast.length === 0) {
-    await dispatch('fetchWeekWeather');
-  }
-})();
 </script>
 
 <template>

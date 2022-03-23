@@ -32,11 +32,12 @@ function removeCity(cityIndex) {
 <template>
   <transition-group
     tag="ul"
-    name="slide-left"
+    name="slide-card"
+    appear
     class="mt-5"
     :class="{ active: isEdit }"
   >
-    <li class="weather-list" v-for="(city, cityIndex) in cities" :key="city">
+    <li v-for="(city, cityIndex) in cities" :key="city" class="weather-list">
       <div class="remove-btn">
         <AppIcon
           icon="remove"
@@ -74,6 +75,6 @@ function removeCity(cityIndex) {
   </transition-group>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import './HomeWeatherList.scss';
 </style>

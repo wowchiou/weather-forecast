@@ -1,4 +1,13 @@
 @import '~@/assets/scss/_var.scss';
 
-.weatherWeekCard {
+.week-list {
+  @apply flex justify-between items-center p-4 font-bold text-3xl;
+}
+
+.bar-wrap {
+  @apply relative flex-1 mx-3 h-2 bg-gray-100 rounded-full overflow-hidden;
+}
+
+.bar {
+  @apply absolute h-full top-0 left-3 bg-yellow-400 rounded-full;
 }

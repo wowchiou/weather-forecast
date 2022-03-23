@@ -4,6 +4,7 @@ import Http from '@/services';
 const createVuexStore = (initialState) => {
   const state = Object.assign(
     {
+      loader: true,
       sunrise: {
         day: 0,
         night: 0,
@@ -17,6 +18,9 @@ const createVuexStore = (initialState) => {
   const getters = {};
 
   const mutations = {
+    SET_LOADER(state, loading) {
+      state.loader = loading;
+    },
     SET_SUNRISE(state, sunData) {
       state.sunrise = sunData;
     },
@@ -29,6 +33,10 @@ const createVuexStore = (initialState) => {
   };
 
   const actions = {
+    showLoader({ commit }, loading) {
+      commit('SET_LOADER', loading);
+    },
+
     fetchWeatherForecast({ commit }) {
       return Http.getWeatherForecast().then((res) => {
         const newWeatherData = formateWeatherData(

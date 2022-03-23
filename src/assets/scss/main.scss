@@ -68,3 +68,47 @@ option {
 .fade-leave-to {
   opacity: 0;
 }
+
+.slide-fade-enter {
+  transform: translateX(10px);
+  opacity: 0;
+}
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.2s ease;
+}
+.slide-fade-leave-to {
+  transform: translateX(-10px);
+  opacity: 0;
+}
+
+.slide-card-enter-active {
+  animation: slide-in 0.3s ease;
+}
+.slide-card-leave-active {
+  animation: slide-out 0.3s ease;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(15px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(0);
+    max-height: 150px;
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-15px);
+    max-height: 0;
+    opacity: 0;
+  }
+}

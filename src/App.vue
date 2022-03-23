@@ -1,19 +1,32 @@
 <script setup>
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 import AppHeader from '@/components/AppHeader';
+import AppLoader from '@/components/AppLoader';
 
-const { dispatch } = useStore();
+const { state, dispatch } = useStore();
+const loader = computed(() => state.loader);
+
 (async () => {
-  await dispatch('fetchWeatherForecast');
+  await Promise.all([
+    dispatch('fetchWeatherForecast'),
+    dispatch('fetchWeekWeather'),
+  ]);
+  dispatch('showLoader', false);
 })();
 </script>
 
 <template>
   <div class="max-w-3xl w-11/12 m-auto pt-5 pb-20 text-white">
     <AppHeader />
-    <transition name="fade" mode="out-in">
-      <router-view />
-    </transition>
+    <router-view v-slot="{ Component }">
+      <transition name="slide-fade" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
+    <teleport to="#portal-loader">
+      <AppLoader v-if="loader" />
+    </teleport>
   </div>
 </template>
 

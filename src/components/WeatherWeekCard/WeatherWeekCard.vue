@@ -1,6 +1,7 @@
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, onMounted } from 'vue';
 import useWeather from '@/utils/useWeather.js';
+import useGsap from '@/utils/useGsap.js';
 
 const props = defineProps({
   cityWeekData: {
@@ -10,18 +11,28 @@ const props = defineProps({
 });
 
 const { getWeatherPic, getDayStatus, getTemperatureBar } = useWeather();
+const { setWeekListAnimate } = useGsap();
+
+onMounted(() => {
+  setWeekListAnimate();
+});
 
 function getElement(el, timeIndex, valueIndex) {
+  const weatherEl = props.cityWeekData.weatherElement[el];
   if (typeof timeIndex === 'undefined') {
-    return props.cityWeekData.weatherElement[el];
+    return weatherEl;
   }
   if (!valueIndex) {
-    return props.cityWeekData.weatherElement[el].time[timeIndex].elementValue[0]
-      .value;
+    return weatherEl.time[timeIndex].elementValue[0].value;
   }
-  return props.cityWeekData.weatherElement[el].time[timeIndex].elementValue[
-    valueIndex
-  ].value;
+  return weatherEl.time[timeIndex].elementValue[valueIndex].value;
+}
+
+function getBarStyle(timeIndex) {
+  const maxElement = getElement('MaxT');
+  const minElement = getElement('MinT');
+  const bar = getTemperatureBar(maxElement, minElement, timeIndex);
+  return { width: `${bar.width}%`, left: `${bar.left}%` };
 }
 </script>
 
@@ -35,7 +46,7 @@ function getElement(el, timeIndex, valueIndex) {
         <li
           v-for="(time, timeIndex) in cityWeekData.weatherElement['T'].time"
           :key="`week${timeIndex}`"
-          class="flex justify-between items-center p-4 font-bold text-3xl"
+          class="week-list"
         >
           <p class="w-['30%'] text-left text-2xl">
             <span>{{ getDayStatus(time.startTime).day }}</span>
@@ -68,28 +79,8 @@ function getElement(el, timeIndex, valueIndex) {
             <p class="text-blue-500 opacity-90">
               {{ getElement('MinT', timeIndex) }}&#8451;
             </p>
-            <div
-              class="relative flex-1 mx-3 h-2 bg-gray-100 rounded-full overflow-hidden"
-            >
-              <span
-                class="absolute h-full top-0 left-3 bg-yellow-400 rounded-full"
-                :style="{
-                  width: `${
-                    getTemperatureBar(
-                      getElement('MaxT'),
-                      getElement('MinT'),
-                      timeIndex
-                    ).width
-                  }%`,
-                  left: `${
-                    getTemperatureBar(
-                      getElement('MaxT'),
-                      getElement('MinT'),
-                      timeIndex
-                    ).left
-                  }%`,
-                }"
-              ></span>
+            <div class="bar-wrap">
+              <span class="bar" :style="getBarStyle(timeIndex)"></span>
             </div>
             <p class="text-red-500 opacity-80">
               {{ getElement('MaxT', timeIndex) }}&#8451;
