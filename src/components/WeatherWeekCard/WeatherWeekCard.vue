@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, onMounted } from 'vue';
 import useWeather from '@/utils/useWeather.js';
-import useGsap from '@/utils/useGsap.js';
+import useAnimate from '@/utils/useAnimate.js';
 
 const props = defineProps({
   cityWeekData: {
@@ -11,7 +11,7 @@ const props = defineProps({
 });
 
 const { getWeatherPic, getDayStatus, getTemperatureBar } = useWeather();
-const { setWeekListAnimate } = useGsap();
+const { setWeekListAnimate } = useAnimate();
 
 onMounted(() => {
   setWeekListAnimate();

@@ -1,6 +1,6 @@
 import gsap from 'gsap';
 
-export default function useGsap() {
+export default function useAnimate() {
   const tl = gsap.timeline();
 
   function setWeekListAnimate() {

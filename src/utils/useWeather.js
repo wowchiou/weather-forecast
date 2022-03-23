@@ -3,29 +3,40 @@ import { useStore } from 'vuex';
 export default function useWeather() {
   const { state } = useStore();
 
+  const TIME_TEXT = {
+    earlyMorning: '凌晨',
+    morning: '白天',
+    night: '夜晚',
+  };
+
+  const picURL =
+    'https://www.cwb.gov.tw/V8/assets/img/weather_icons/weathers/svg_icon/';
+
   function getWeatherPic(picIndex, status) {
-    const isDay =
-      state.sunrise.day <= Date.now() && Date.now() < state.sunrise.night;
+    const { earlyMorning, morning, night } = TIME_TEXT;
+    const { day: sunDay, night: sunNight } = state.sunrise;
+    const isDay = sunDay <= Date.now() && Date.now() < sunNight;
     let timeText = isDay ? 'day' : 'night';
-    if ((status && status === '凌晨') || status === '夜晚') {
+    if ((status && status === earlyMorning) || status === night) {
       timeText = 'night';
-    } else if (status && status === '白天') {
+    } else if (status && status === morning) {
       timeText = 'day';
     }
-    return `https://www.cwb.gov.tw/V8/assets/img/weather_icons/weathers/svg_icon/${timeText}/${picIndex}.svg`;
+    return `${picURL}${timeText}/${picIndex}.svg`;
   }
 
   function getDayStatus(time) {
     let status;
+    const { earlyMorning, morning, night } = TIME_TEXT;
     const date = getWeatherTime(time);
     const day = date.day === new Date().getDate() ? '今日' : `${date.day}日`;
     const hours = date.hours;
     if (0 <= hours && hours < 6) {
-      status = '凌晨';
+      status = earlyMorning;
     } else if (6 <= hours && hours < 18) {
-      status = '白天';
+      status = morning;
     } else {
-      status = '夜晚';
+      status = night;
     }
     return { day, status };
   }
@@ -48,11 +59,11 @@ export default function useWeather() {
     const cityData = state.weatherForecast.find(
       (itm) => itm.locationName === city
     );
+    const weatherElData = cityData.weatherElement[dataName].time[0];
     if (!valueIndex) {
-      return cityData.weatherElement[dataName].time[0].elementValue[0].value;
+      return weatherElData.elementValue[0].value;
     } else {
-      return cityData.weatherElement[dataName].time[0].elementValue[valueIndex]
-        .value;
+      return weatherElData.elementValue[valueIndex].value;
     }
   }
 
