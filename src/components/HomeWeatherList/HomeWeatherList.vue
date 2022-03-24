@@ -1,5 +1,6 @@
 <script setup>
 import { ref, defineProps } from 'vue';
+import { useStore } from 'vuex';
 import useWeather from '@/utils/useWeather.js';
 import { WEATHER_CITY } from '@/storage.js';
 import AppIcon from '@/components/AppIcon';
@@ -10,8 +11,10 @@ defineProps({
   },
 });
 
-const { getWeatherPic, getWeatherData } = useWeather();
-
+const { state } = useStore();
+const { getWeatherPic, getWeatherValue } = useWeather({
+  weatherForecast: state.weatherForecast,
+});
 const cities = ref(localStorage.getItem(WEATHER_CITY));
 
 if (cities.value) {
@@ -51,22 +54,22 @@ function removeCity(cityIndex) {
             <p class="text-4xl">
               <span>{{ city }}</span>
             </p>
-            <p class="text-6xl">{{ getWeatherData(city, 'T') }}&#8451;</p>
+            <p class="text-6xl">{{ getWeatherValue(city, 'T') }}&#8451;</p>
           </div>
           <div class="flex justify-between items-center mt-5">
             <p class="flex justify-start items-center">
               <span class="w-14 h-14 mr-2 flex justify-start items-center"
                 ><img
                   class="m-h-11/12 m-w-11/12 w-full h-hull"
-                  :src="getWeatherPic(getWeatherData(city, 'Wx', 1))"
+                  :src="getWeatherPic(getWeatherValue(city, 'Wx', 1))"
               /></span>
               <span>
-                {{ getWeatherData(city, 'Wx') }}
+                {{ getWeatherValue(city, 'Wx') }}
               </span>
             </p>
             <p class="text-3xl">
               降雨率
-              {{ getWeatherData(city, 'PoP6h') }}%
+              {{ getWeatherValue(city, 'PoP6h') }}%
             </p>
           </div>
         </div>

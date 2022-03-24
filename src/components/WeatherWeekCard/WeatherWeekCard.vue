@@ -1,38 +1,39 @@
 <script setup>
 import { defineProps, onMounted } from 'vue';
+import { useStore } from 'vuex';
 import useWeather from '@/utils/useWeather.js';
 import useAnimate from '@/utils/useAnimate.js';
 
 const props = defineProps({
-  cityWeekData: {
-    type: Object,
-    required: true,
-  },
+  city: { type: String, required: true },
 });
 
-const { getWeatherPic, getDayStatus, getTemperatureBar } = useWeather();
+const { state } = useStore();
 const { setWeekListAnimate } = useAnimate();
+const {
+  getWeekWeatherValue,
+  getWeekWeatherElement,
+  getWeatherPic,
+  getDayStatus,
+  getTemperatureBar,
+} = useWeather({
+  weekWeatherForecast: state.weekWeatherForecast,
+});
 
 onMounted(() => {
   setWeekListAnimate();
 });
 
-function getElement(el, timeIndex, valueIndex) {
-  const weatherEl = props.cityWeekData.weatherElement[el];
-  if (typeof timeIndex === 'undefined') {
-    return weatherEl;
-  }
-  if (!valueIndex) {
-    return weatherEl.time[timeIndex].elementValue[0].value;
-  }
-  return weatherEl.time[timeIndex].elementValue[valueIndex].value;
-}
-
 function getBarStyle(timeIndex) {
-  const maxElement = getElement('MaxT');
-  const minElement = getElement('MinT');
+  const maxElement = getWeekWeatherValue(props.city, 'MaxT');
+  const minElement = getWeekWeatherValue(props.city, 'MinT');
   const bar = getTemperatureBar(maxElement, minElement, timeIndex);
   return { width: `${bar.width}%`, left: `${bar.left}%` };
+}
+
+function getWeekWeatherData(dataName, timeIndex, valueIndex) {
+  const valIndex = valueIndex || null;
+  return getWeekWeatherValue(props.city, dataName, timeIndex, valIndex);
 }
 </script>
 
@@ -44,7 +45,7 @@ function getBarStyle(timeIndex) {
       </div>
       <ul>
         <li
-          v-for="(time, timeIndex) in cityWeekData.weatherElement['T'].time"
+          v-for="(time, timeIndex) in getWeekWeatherElement(city, 'T').time"
           :key="`week${timeIndex}`"
           class="week-list"
         >
@@ -59,31 +60,31 @@ function getBarStyle(timeIndex) {
                   class="h-full"
                   :src="
                     getWeatherPic(
-                      getElement('Wx', timeIndex, 1),
+                      getWeekWeatherData('Wx', timeIndex, 1),
                       getDayStatus(time.startTime).status
                     )
                   "
                 />
               </div>
               <p class="text-2xl text-gray-100">
-                <span v-if="getElement('PoP12h', timeIndex).trim()">
-                  {{ getElement('PoP12h', timeIndex) }}%
+                <span v-if="getWeekWeatherData('PoP12h', timeIndex).trim()">
+                  {{ getWeekWeatherData('PoP12h', timeIndex) }}%
                 </span>
                 <span v-else>
-                  {{ getElement('Wx', timeIndex) }}
+                  {{ getWeekWeatherData('Wx', timeIndex) }}
                 </span>
               </p>
             </div>
           </div>
           <div class="flex items-center flex-1 text-2xl">
             <p class="text-blue-500 opacity-90">
-              {{ getElement('MinT', timeIndex) }}&#8451;
+              {{ getWeekWeatherData('MinT', timeIndex) }}&#8451;
             </p>
             <div class="bar-wrap">
               <span class="bar" :style="getBarStyle(timeIndex)"></span>
             </div>
             <p class="text-red-500 opacity-80">
-              {{ getElement('MaxT', timeIndex) }}&#8451;
+              {{ getWeekWeatherData('MaxT', timeIndex) }}&#8451;
             </p>
           </div>
         </li>

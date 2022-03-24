@@ -1,20 +1,25 @@
 <script setup>
 import { defineProps } from 'vue';
+import { useStore } from 'vuex';
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
 import useWeather from '@/utils/useWeather.js';
-
-const { getWeatherData, getWeatherPic, getWeatherTime, getDayStatus } =
-  useWeather();
 
 defineProps({
   city: {
     type: String,
     required: true,
   },
-  cityData: {
-    type: Object,
-    required: true,
-  },
+});
+
+const { state } = useStore();
+const {
+  getWeatherValue,
+  getWeatherElement,
+  getWeatherPic,
+  getWeatherTime,
+  getDayStatus,
+} = useWeather({
+  weatherForecast: state.weatherForecast,
 });
 </script>
 
@@ -25,13 +30,13 @@ defineProps({
         <p
           class="pb-4 border-b border-gray-100 text-gray-200 dark:text-gray-400"
         >
-          {{ getWeatherData(city, 'WeatherDescription') }}
+          {{ getWeatherValue(city, 'WeatherDescription') }}
         </p>
       </div>
       <PerfectScrollbar class="pb-4">
         <ul class="whitespace-nowrap">
           <li
-            v-for="(time, timeIndex) in cityData.weatherElement.Wx.time"
+            v-for="(time, timeIndex) in getWeatherElement(city, 'Wx').time"
             :key="`today${timeIndex}`"
             class="w-auto inline-block p-4"
           >
@@ -56,7 +61,7 @@ defineProps({
             </div>
             <p class="mt-2">
               {{
-                cityData.weatherElement['T'].time[timeIndex].elementValue[0]
+                getWeatherElement(city, 'T').time[timeIndex].elementValue[0]
                   .value
               }}&#8451;
             </p>

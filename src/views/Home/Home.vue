@@ -19,9 +19,11 @@ const hasWeatherData = computed(
   <div class="home">
     <div class="mt-5">
       <CitySelector />
+
       <p v-if="!hasWeatherData" class="empty-text">請選擇城市</p>
       <HomeWeatherList v-else :isEdit="isEdit" />
     </div>
+
     <div class="edit-btn" :class="{ active: isEdit }" @click="isEdit = !isEdit">
       <AppIcon class="text-5xl" icon="edit" />
     </div>
@@ -30,7 +32,4 @@ const hasWeatherData = computed(
 
 <style lang="scss" scoped>
 @import './Home.scss';
-.empty-text {
-  @apply mt-5 text-3xl text-center text-yellow-400;
-}
 </style>

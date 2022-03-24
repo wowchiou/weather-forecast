@@ -1,25 +1,21 @@
 <script setup>
 import { ref } from 'vue';
-import { useStore } from 'vuex';
 import { WEATHER_DARK_MODE } from '@/storage.js';
-
 import AppIcon from '@/components/AppIcon';
 import AppSwitch from '@/components/AppSwitch';
 
-const { state, dispatch } = useStore();
 const dark = ref(false);
+const localDarkMode = localStorage.getItem(WEATHER_DARK_MODE);
 
-(async () => {
-  const localDark = localStorage.getItem(WEATHER_DARK_MODE);
-  if (!localDark) {
-    await dispatch('fetchSunrise');
-    const date = Date.now();
-    dark.value = date >= state.sunrise.night || date < state.sunrise.day;
-  } else if (localDark && localDark === 'on') {
-    dark.value = true;
-  }
-  setDarkMode(dark.value);
-})();
+if (!localDarkMode) {
+  const date = Date.now();
+  const currentHours = date.getHours();
+  dark.value = currentHours >= 6 && currentHours < 18;
+} else if (localDarkMode === 'on') {
+  dark.value = true;
+}
+
+setDarkMode(dark.value);
 
 function toggleDark() {
   dark.value = !dark.value;

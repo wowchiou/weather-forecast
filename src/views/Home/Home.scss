@@ -6,3 +6,7 @@
     background-color: rgba(255, 255, 255, 0.3);
   }
 }
+
+.empty-text {
+  @apply mt-5 text-3xl text-center text-yellow-400;
+}

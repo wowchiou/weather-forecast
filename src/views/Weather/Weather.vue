@@ -12,27 +12,17 @@ const props = defineProps({
   },
 });
 
-const { state } = useStore();
-
-const cityData = computed(() => {
-  return state.weatherForecast.find(
-    (weatherData) => weatherData.locationName === props.city
-  );
-});
-
-const cityWeekData = computed(() => {
-  return state.weekWeatherForecast.find(
-    (weatherData) => weatherData.locationName === props.city
-  );
-});
+const { getters } = useStore();
+const cityData = computed(() => getters.getCityWeather(props.city));
+const cityWeekData = computed(() => getters.getCityWeekWeather(props.city));
 </script>
 
 <template>
   <div class="weather text-center">
-    <div v-if="cityData" class="relative z-10">
+    <div v-if="cityData && cityWeekData" class="relative z-10">
       <WeatherNowCard :city="city" />
-      <WeatherTreeDaysCard :city="city" :cityData="cityData" />
-      <WeatherWeekCard v-if="cityWeekData" :cityWeekData="cityWeekData" />
+      <WeatherTreeDaysCard :city="city" />
+      <WeatherWeekCard :city="city" />
     </div>
   </div>
 </template>

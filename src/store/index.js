@@ -5,17 +5,22 @@ const createVuexStore = (initialState) => {
   const state = Object.assign(
     {
       loader: true,
-      sunrise: {
-        day: 0,
-        night: 0,
-      },
       weatherForecast: [],
       weekWeatherForecast: [],
     },
     initialState
   );
 
-  const getters = {};
+  const getters = {
+    getCityWeather: (state) => (city) => {
+      return state.weatherForecast.find((itm) => itm.locationName === city);
+    },
+    getCityWeekWeather: (state) => (city) => {
+      return state.weekWeatherForecast.find(
+        (weatherData) => weatherData.locationName === city
+      );
+    },
+  };
 
   const mutations = {
     SET_LOADER(state, loading) {
@@ -52,27 +57,6 @@ const createVuexStore = (initialState) => {
           res.data.records.locations[0].location
         );
         commit('SET_WEEK_WEATHER_FORECAST', newWeatherData);
-      });
-    },
-
-    fetchSunrise({ commit }) {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month =
-        date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
-      const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-      const now = `${year}-${month}-${day}`;
-      return Http.getSunrise(now).then((res) => {
-        let sunData = {};
-        res.data.records.locations.location[0].time[0].parameter.forEach(
-          (param) => {
-            const time = new Date(`${now} ${param.parameterValue}`).getTime();
-            if (param.parameterName === '日出時刻') return (sunData.day = time);
-            if (param.parameterName === '日沒時刻')
-              return (sunData.night = time);
-          }
-        );
-        commit('SET_SUNRISE', sunData);
       });
     },
   };
