@@ -34,4 +34,14 @@ describe('DarkModeSwitch', () => {
     expect(wrapper.vm.dark).toBe(false);
     expect(localStorage.getItem(WEATHER_DARK_MODE)).toContain('off');
   });
+
+  //   it(`local storage has dark mode data, do not auto change dark mode`, () => {});
+
+  //   it(`current time is 6, dark mode off`, () => {});
+
+  //   it(`current time is 12, dark mode off`, () => {});
+
+  //   it(`current time is 18, dark mode on`, () => {});
+
+  //   it(`current time is 0, dark mode on`, () => {});
 });
