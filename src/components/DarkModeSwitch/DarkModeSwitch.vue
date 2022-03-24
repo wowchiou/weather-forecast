@@ -4,13 +4,13 @@ import { WEATHER_DARK_MODE } from '@/storage.js';
 import AppIcon from '@/components/AppIcon';
 import AppSwitch from '@/components/AppSwitch';
 
+const date = new Date();
 const dark = ref(false);
+const currentHours = ref(date.getHours());
 const localDarkMode = localStorage.getItem(WEATHER_DARK_MODE);
 
 if (!localDarkMode) {
-  const date = Date.now();
-  const currentHours = date.getHours();
-  dark.value = currentHours >= 6 && currentHours < 18;
+  dark.value = currentHours.value >= 6 && currentHours.value < 18;
 } else if (localDarkMode === 'on') {
   dark.value = true;
 }
@@ -34,9 +34,13 @@ function setDarkMode(dark) {
 
 <template>
   <div class="flex justify-center items-center">
-    <AppIcon class="text-3xl mr-2" icon="wb_sunny" />
-    <AppSwitch :active="dark" @click="toggleDark" />
-    <AppIcon class="text-3xl ml-2" icon="nightlight_round" />
+    <AppIcon data-test="dark-sun" class="text-3xl mr-2" icon="wb_sunny" />
+    <AppSwitch data-test="dark-switch" :active="dark" @click="toggleDark" />
+    <AppIcon
+      data-test="dark-moon"
+      class="text-3xl ml-2"
+      icon="nightlight_round"
+    />
   </div>
 </template>
 

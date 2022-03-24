@@ -1,34 +1,37 @@
 import { mount } from '@vue/test-utils';
-import { createRouter, createWebHashHistory } from 'vue-router';
-import { createVuexStore } from '@/store';
-import { routes } from '@/router';
 import DarkModeSwitch from './DarkModeSwitch.vue';
-
-const router = createRouter({
-  history: createWebHashHistory(process.env.BASE_URL),
-  routes,
-});
-
-function mountComponent(config = {}) {
-  config.mountOptions = config.mountOptions || {};
-  config.plugins = config.plugins || {};
-  const store = config.store || createVuexStore();
-  return mount(DarkModeSwitch, {
-    global: {
-      plugins: [store, router],
-    },
-    ...config.mountOptions,
-  });
-}
+import { WEATHER_DARK_MODE } from '@/storage.js';
 
 let wrapper;
 
 describe('DarkModeSwitch', () => {
   beforeEach(() => {
-    wrapper = mountComponent();
+    wrapper = mount(DarkModeSwitch);
   });
 
-  it('DarkModeSwitch is exist', () => {
-    expect(true).toBe(true);
+  it('has sun icon', () => {
+    const $SUN_ICON = wrapper.find('[data-test="dark-sun"]');
+    expect($SUN_ICON.html()).toContain('wb_sunny');
+  });
+
+  it('has moon icon', () => {
+    const $MOON_ICON = wrapper.find('[data-test="dark-moon"]');
+    expect($MOON_ICON.html()).toContain('nightlight_round');
+  });
+
+  it(`switch button is exists`, () => {
+    const $SWITCH_BUTTON = wrapper.find('[data-test="dark-switch"]');
+    expect($SWITCH_BUTTON.exists()).toBeTruthy();
+  });
+
+  it(`click switch button, toggle dark mode`, async () => {
+    const $SWITCH_BUTTON = wrapper.find('[data-test="dark-switch"]');
+    await $SWITCH_BUTTON.trigger('click');
+    expect(wrapper.vm.dark).toBe(true);
+    expect(localStorage.getItem(WEATHER_DARK_MODE)).toContain('on');
+
+    await $SWITCH_BUTTON.trigger('click');
+    expect(wrapper.vm.dark).toBe(false);
+    expect(localStorage.getItem(WEATHER_DARK_MODE)).toContain('off');
   });
 });

@@ -1,22 +1,15 @@
-import { mount } from '@vue/test-utils';
-import { createRouter, createWebHashHistory } from 'vue-router';
-import { createVuexStore } from '@/store';
-import { routes } from '@/router';
+import { shallowMount } from '@vue/test-utils';
 import AppSwitch from './AppSwitch.vue';
 
-const router = createRouter({
-  history: createWebHashHistory(process.env.BASE_URL),
-  routes,
-});
+const propsData = {
+  active: false,
+};
 
 function mountComponent(config = {}) {
   config.mountOptions = config.mountOptions || {};
   config.plugins = config.plugins || {};
-  const store = config.store || createVuexStore();
-  return mount(AppSwitch, {
-    global: {
-      plugins: [store, router],
-    },
+  return shallowMount(AppSwitch, {
+    propsData,
     ...config.mountOptions,
   });
 }
@@ -28,7 +21,14 @@ describe('AppSwitch', () => {
     wrapper = mountComponent();
   });
 
-  it('AppSwitch is exist', () => {
-    expect(true).toBe(true);
+  it('props active false, button without active class', () => {
+    const $SWITCH_BUTTON = wrapper.find('[data-test="switch-btn"]');
+    expect($SWITCH_BUTTON.classes()).not.toContain('active');
+  });
+
+  it('props active true, button with active class', async () => {
+    await wrapper.setProps({ active: true });
+    let $SWITCH_BUTTON = wrapper.find('[data-test="switch-btn"]');
+    expect($SWITCH_BUTTON.classes()).toContain('active');
   });
 });

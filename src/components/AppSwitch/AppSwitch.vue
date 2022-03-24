@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="switch-btn" :class="{ active }">
+  <div class="switch-btn" :class="{ active }" data-test="switch-btn">
     <div class="ball"></div>
   </div>
 </template>

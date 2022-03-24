@@ -23,12 +23,17 @@ function handleCityChange(e) {
 
 <template>
   <div class="input-wrap">
-    <select class="flex-1 text-3xl text-center" @change="handleCityChange">
+    <select
+      class="flex-1 text-3xl text-center"
+      data-test="city-selector"
+      @change="handleCityChange"
+    >
       <option value="">-- 請選擇城市 --</option>
       <option
         v-for="city in cities"
         :key="city.locationName"
         :value="city.locationName"
+        data-test="city-options"
       >
         {{ city.locationName }}
       </option>

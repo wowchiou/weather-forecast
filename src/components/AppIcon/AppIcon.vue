@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-  <span class="material-icons">{{ icon }}</span>
+  <span class="material-icons" data-test="icon">{{ icon }}</span>
 </template>
 
 <style lang="scss" scoped>

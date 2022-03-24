@@ -4,10 +4,10 @@ import DarkModeSwitch from '@/components/DarkModeSwitch';
 
 <template>
   <header class="flex justify-between items-center">
-    <router-link :to="{ name: 'home' }">
+    <router-link data-test="header-link" :to="{ name: 'home' }">
       <h1 class="text-5xl font-bold text-left">天氣</h1>
     </router-link>
-    <DarkModeSwitch />
+    <DarkModeSwitch data-test="dark-mode-switch" />
   </header>
 </template>
 
