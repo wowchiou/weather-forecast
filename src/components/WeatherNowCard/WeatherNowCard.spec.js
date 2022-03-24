@@ -1,4 +1,5 @@
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { createVuexStore } from '@/store';
 import WeatherNowCard from './WeatherNowCard.vue';
 import useWeather from '@/utils/useWeather';
@@ -28,7 +29,8 @@ describe('WeatherNowCard', () => {
     expect($CITY_NAME.text()).toEqual(wrapper.vm.city);
   });
 
-  it(`card has current temperature`, () => {
+  it(`card has current temperature`, async () => {
+    await flushPromises();
     const $WEATHER_T = wrapper.find('[data-test="weather-t"]');
     expect($WEATHER_T.text()).toContain(getWeatherValue(wrapper.vm.city, 'T'));
   });
