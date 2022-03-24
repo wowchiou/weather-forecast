@@ -12,7 +12,7 @@ export default function useWeather({ weatherForecast, weekWeatherForecast }) {
     const { earlyMorning, morning, night } = TIME_TEXT;
     const date = new Date();
     const currentHours = date.getHours();
-    let timeText = currentHours >= 6 && currentHours < 18 ? 'day' : 'night';
+    let timeText = currentHours < 6 || currentHours >= 18 ? 'night' : 'day';
     if (status === earlyMorning || status === night) {
       timeText = 'night';
     } else if (status === morning) {

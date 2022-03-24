@@ -1,21 +1,23 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { WEATHER_DARK_MODE } from '@/storage.js';
 import AppIcon from '@/components/AppIcon';
 import AppSwitch from '@/components/AppSwitch';
 
-const date = new Date();
 const dark = ref(false);
-const currentHours = ref(date.getHours());
-const localDarkMode = localStorage.getItem(WEATHER_DARK_MODE);
 
-if (!localDarkMode) {
-  dark.value = currentHours.value >= 6 && currentHours.value < 18;
-} else if (localDarkMode === 'on') {
-  dark.value = true;
-}
+onMounted(() => {
+  const localDarkMode = localStorage.getItem(WEATHER_DARK_MODE);
+  if (!localDarkMode) {
+    const date = new Date();
+    const currentHours = date.getHours();
+    dark.value = currentHours < 6 || currentHours >= 18;
+  } else if (localDarkMode === 'on') {
+    dark.value = true;
+  }
 
-setDarkMode(dark.value);
+  setDarkMode(dark.value);
+});
 
 function toggleDark() {
   dark.value = !dark.value;

@@ -4,6 +4,15 @@ import { WEATHER_DARK_MODE } from '@/storage.js';
 
 let wrapper;
 
+function isDarkTime() {
+  const currentHours = new Date().getHours();
+  return currentHours < 6 || currentHours >= 18;
+}
+
+function getDarkModeText(dark) {
+  return dark ? 'on' : 'off';
+}
+
 describe('DarkModeSwitch', () => {
   beforeEach(() => {
     wrapper = mount(DarkModeSwitch);
@@ -26,22 +35,19 @@ describe('DarkModeSwitch', () => {
 
   it(`click switch button, toggle dark mode`, async () => {
     const $SWITCH_BUTTON = wrapper.find('[data-test="dark-switch"]');
+    let dark = isDarkTime();
     await $SWITCH_BUTTON.trigger('click');
-    expect(wrapper.vm.dark).toBe(true);
-    expect(localStorage.getItem(WEATHER_DARK_MODE)).toContain('on');
+    dark = !dark;
+    expect(wrapper.vm.dark).toBe(dark);
+    expect(localStorage.getItem(WEATHER_DARK_MODE)).toContain(
+      getDarkModeText(dark)
+    );
 
     await $SWITCH_BUTTON.trigger('click');
-    expect(wrapper.vm.dark).toBe(false);
-    expect(localStorage.getItem(WEATHER_DARK_MODE)).toContain('off');
+    dark = !dark;
+    expect(wrapper.vm.dark).toBe(dark);
+    expect(localStorage.getItem(WEATHER_DARK_MODE)).toContain(
+      getDarkModeText(dark)
+    );
   });
-
-  //   it(`local storage has dark mode data, do not auto change dark mode`, () => {});
-
-  //   it(`current time is 6, dark mode off`, () => {});
-
-  //   it(`current time is 12, dark mode off`, () => {});
-
-  //   it(`current time is 18, dark mode on`, () => {});
-
-  //   it(`current time is 0, dark mode on`, () => {});
 });

@@ -1,34 +1,55 @@
-// import { mount } from '@vue/test-utils';
-// import { createRouter, createWebHashHistory } from 'vue-router';
-// import { createVuexStore } from '@/store';
-// import { routes } from '@/router';
-// import WeatherNowCard from './WeatherNowCard.vue';
+import { mount } from '@vue/test-utils';
+import { createVuexStore } from '@/store';
+import WeatherNowCard from './WeatherNowCard.vue';
+import useWeather from '@/utils/useWeather';
+import weatherForecast from '@/mocks/weather-forecast.json';
 
-// const router = createRouter({
-//   history: createWebHashHistory(process.env.BASE_URL),
-//   routes,
-// });
+const store = createVuexStore({ weatherForecast });
+const { getWeatherPic, getWeatherValue } = useWeather({
+  weatherForecast,
+});
 
-// function mountComponent(config = {}) {
-//   config.mountOptions = config.mountOptions || {};
-//   config.plugins = config.plugins || {};
-//   const store = config.store || createVuexStore();
-//   return mount(WeatherNowCard, {
-//     global: {
-//       plugins: [store, router],
-//     },
-//     ...config.mountOptions,
-//   });
-// }
+let wrapper;
 
-// let wrapper;
+describe('WeatherNowCard', () => {
+  beforeEach(() => {
+    wrapper = mount(WeatherNowCard, {
+      props: {
+        city: '新竹市',
+      },
+      global: {
+        plugins: [store],
+      },
+    });
+  });
 
-// describe('WeatherNowCard', () => {
-//   beforeEach(() => {
-//     wrapper = mountComponent();
-//   });
+  it('card has current city name', () => {
+    const $CITY_NAME = wrapper.find('[data-test="city-name"]');
+    expect($CITY_NAME.text()).toEqual(wrapper.vm.city);
+  });
 
-//   it('WeatherNowCard is exist', () => {
-//     expect(true).toBe(true);
-//   });
-// });
+  it(`card has current temperature`, () => {
+    const $WEATHER_T = wrapper.find('[data-test="weather-t"]');
+    expect($WEATHER_T.text()).toContain(getWeatherValue(wrapper.vm.city, 'T'));
+  });
+
+  it(`card has current wx`, () => {
+    const $WEATHER_WX = wrapper.find('[data-test="weather-wx"]');
+    expect($WEATHER_WX.text()).toContain(
+      getWeatherValue(wrapper.vm.city, 'Wx')
+    );
+  });
+
+  it(`card has current pop`, () => {
+    const $WEATHER_POP = wrapper.find('[data-test="weather-pop"]');
+    expect($WEATHER_POP.text()).toContain(
+      getWeatherValue(wrapper.vm.city, 'PoP6h')
+    );
+  });
+
+  it(`card has current weather picture`, () => {
+    const $WEATHER_PIC = wrapper.find('[data-test="weather-pic"]');
+    const wxValue = getWeatherValue(wrapper.vm.city, 'Wx', 1);
+    expect($WEATHER_PIC.html()).toContain(getWeatherPic(wxValue));
+  });
+});

@@ -40,34 +40,46 @@ function removeCity(cityIndex) {
     class="mt-5"
     :class="{ active: isEdit }"
   >
-    <li v-for="(city, cityIndex) in cities" :key="city" class="weather-list">
+    <li
+      v-for="(city, cityIndex) in cities"
+      :key="city"
+      class="weather-list"
+      data-test="weather-list"
+    >
       <div class="remove-btn">
         <AppIcon
           icon="remove"
           class="remove-icon"
+          data-test="remove-button"
           @click="removeCity(cityIndex)"
         />
       </div>
-      <router-link :to="{ name: 'weather', params: { city } }">
+      <router-link
+        data-test="weather-list-link"
+        :to="{ name: 'weather', params: { city } }"
+      >
         <div class="relative z-10">
           <div class="flex justify-between items-end">
             <p class="text-4xl">
-              <span>{{ city }}</span>
+              <span data-test="city-name">{{ city }}</span>
             </p>
-            <p class="text-6xl">{{ getWeatherValue(city, 'T') }}&#8451;</p>
+            <p class="text-6xl" data-test="weather-t">
+              {{ getWeatherValue(city, 'T') }}&#8451;
+            </p>
           </div>
           <div class="flex justify-between items-center mt-5">
             <p class="flex justify-start items-center">
               <span class="w-14 h-14 mr-2 flex justify-start items-center"
                 ><img
                   class="m-h-11/12 m-w-11/12 w-full h-hull"
+                  data-test="weather-pic"
                   :src="getWeatherPic(getWeatherValue(city, 'Wx', 1))"
               /></span>
-              <span>
+              <span data-test="weather-wx">
                 {{ getWeatherValue(city, 'Wx') }}
               </span>
             </p>
-            <p class="text-3xl">
+            <p class="text-3xl" data-test="weather-pop">
               降雨率
               {{ getWeatherValue(city, 'PoP6h') }}%
             </p>
