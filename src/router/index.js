@@ -8,10 +8,16 @@ export const routes = [
     component: Home,
   },
   {
-    path: '/:city',
+    path: '/weather/:city',
     name: 'weather',
     props: true,
     component: () => import(/* webpackChunkName: "about" */ '@/views/Weather'),
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'error',
+    component: () =>
+      import(/* webpackChunkName: "error" */ '@/views/ErrorPage'),
   },
 ];
 

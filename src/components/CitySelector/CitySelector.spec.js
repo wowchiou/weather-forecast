@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { createRouter, createWebHashHistory } from 'vue-router';
-import { createVuexStore } from '@/store';
 import { routes } from '@/router';
+import { createVuexStore } from '@/store';
 import CitySelector from './CitySelector.vue';
 import weatherForecast from '@/mocks/weather-forecast.json';
 import { WEATHER_CITY } from '@/storage.js';

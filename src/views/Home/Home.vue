@@ -16,7 +16,7 @@ const hasWeatherData = computed(
 </script>
 
 <template>
-  <div class="home">
+  <div data-test="home" class="home">
     <div class="mt-5">
       <CitySelector />
 
@@ -24,7 +24,12 @@ const hasWeatherData = computed(
       <HomeWeatherList v-else :isEdit="isEdit" />
     </div>
 
-    <div class="edit-btn" :class="{ active: isEdit }" @click="isEdit = !isEdit">
+    <div
+      data-test="edit-button"
+      class="edit-btn"
+      :class="{ active: isEdit }"
+      @click="isEdit = !isEdit"
+    >
       <AppIcon class="text-5xl" icon="edit" />
     </div>
   </div>

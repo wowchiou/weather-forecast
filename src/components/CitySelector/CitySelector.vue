@@ -1,12 +1,9 @@
 <script setup>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { WEATHER_CITY } from '@/storage.js';
+import cities from '@/city.json';
 
-const { state } = useStore();
 const router = useRouter();
-const cities = computed(() => state.weatherForecast);
 
 function handleCityChange(e) {
   const target = e.target.value;
@@ -31,11 +28,11 @@ function handleCityChange(e) {
       <option value="">-- 請選擇城市 --</option>
       <option
         v-for="city in cities"
-        :key="city.locationName"
-        :value="city.locationName"
+        :key="city"
+        :value="city"
         data-test="city-options"
       >
-        {{ city.locationName }}
+        {{ city }}
       </option>
     </select>
   </div>
