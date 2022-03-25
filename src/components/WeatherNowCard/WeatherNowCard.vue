@@ -15,24 +15,25 @@ const { state } = useStore();
 const { getWeatherPic, getWeatherValue } = useWeather({
   weatherForecast: state.weatherForecast,
 });
-const data = reactive({
-  currentTemperature: 0,
-  tweenedTemperature: 0,
+
+const temperature = reactive({
+  current: 0,
+  animateNumber: 0,
 });
 
 watch(
-  () => data.currentTemperature,
+  () => temperature.current,
   (newValue) => {
-    gsap.to(data, {
+    gsap.to(temperature, {
       duration: 1,
       ease: 'circ.out',
-      tweenedTemperature: newValue,
+      animateNumber: newValue,
     });
   }
 );
 
 onMounted(() => {
-  data.currentTemperature = getWeatherValue(props.city, 'T');
+  temperature.current = getWeatherValue(props.city, 'T');
 });
 </script>
 
@@ -40,7 +41,7 @@ onMounted(() => {
   <div class="m-10 relative text-5xl font-bold">
     <div data-test="city-name" class="text-5xl">{{ city }}</div>
     <div data-test="weather-t" class="text-7xl mt-2">
-      {{ data.tweenedTemperature.toFixed(0) }}&#8451;
+      {{ temperature.animateNumber.toFixed(0) }}&#8451;
     </div>
     <div class="mt-4 text-4xl">
       <span data-test="weather-wx">{{ getWeatherValue(city, 'Wx') }}</span>

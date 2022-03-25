@@ -1,5 +1,4 @@
-import { flushPromises, mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { mount } from '@vue/test-utils';
 import { createVuexStore } from '@/store';
 import WeatherNowCard from './WeatherNowCard.vue';
 import useWeather from '@/utils/useWeather';
@@ -11,13 +10,12 @@ const { getWeatherPic, getWeatherValue } = useWeather({
 });
 
 let wrapper;
+const city = '新竹縣';
 
 describe('WeatherNowCard', () => {
   beforeEach(() => {
     wrapper = mount(WeatherNowCard, {
-      props: {
-        city: '新竹市',
-      },
+      props: { city },
       global: {
         plugins: [store],
       },
@@ -26,32 +24,31 @@ describe('WeatherNowCard', () => {
 
   it('card has current city name', () => {
     const $CITY_NAME = wrapper.find('[data-test="city-name"]');
-    expect($CITY_NAME.text()).toEqual(wrapper.vm.city);
+    expect($CITY_NAME.text()).toEqual(city);
   });
 
-  it(`card has current temperature`, async () => {
-    await flushPromises();
-    const $WEATHER_T = wrapper.find('[data-test="weather-t"]');
-    expect($WEATHER_T.text()).toContain(getWeatherValue(wrapper.vm.city, 'T'));
-  });
+  // it(`card has current temperature`, () => {
+  //   const $WEATHER_T = wrapper.find('[data-test="weather-t"]');
+  //   expect($WEATHER_T.text()).toContain('21');
+  // });
 
   it(`card has current wx`, () => {
     const $WEATHER_WX = wrapper.find('[data-test="weather-wx"]');
-    expect($WEATHER_WX.text()).toContain(
-      getWeatherValue(wrapper.vm.city, 'Wx')
-    );
+    expect($WEATHER_WX.text()).toEqual('短暫雨');
   });
 
   it(`card has current pop`, () => {
     const $WEATHER_POP = wrapper.find('[data-test="weather-pop"]');
-    expect($WEATHER_POP.text()).toContain(
-      getWeatherValue(wrapper.vm.city, 'PoP6h')
-    );
+    expect($WEATHER_POP.text()).toContain('30');
   });
 
   it(`card has current weather picture`, () => {
     const $WEATHER_PIC = wrapper.find('[data-test="weather-pic"]');
-    const wxValue = getWeatherValue(wrapper.vm.city, 'Wx', 1);
-    expect($WEATHER_PIC.html()).toContain(getWeatherPic(wxValue));
+    expect($WEATHER_PIC.html()).toContain('08');
+    let status = 'day';
+    if (new Date().getHours() >= 18 || new Date().getHours() < 6) {
+      status = 'night';
+    }
+    expect($WEATHER_PIC.html()).toContain(status);
   });
 });

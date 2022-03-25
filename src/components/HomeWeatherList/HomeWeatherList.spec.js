@@ -5,18 +5,14 @@ import { routes } from '@/router';
 import HomeWeatherList from './HomeWeatherList.vue';
 import weatherForecast from '@/mocks/weather-forecast.json';
 import { WEATHER_CITY } from '@/storage.js';
-import useWeather from '@/utils/useWeather';
 
 const store = createVuexStore({ weatherForecast });
 const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),
   routes,
 });
-const { getWeatherPic, getWeatherValue } = useWeather({
-  weatherForecast,
-});
 let wrapper;
-const cityArray = ['新北市', '桃園市', '新竹市'];
+const cityArray = ['新竹縣', '桃園市', '新竹市'];
 
 describe('HomeWeatherList', () => {
   beforeEach(() => {
@@ -44,37 +40,43 @@ describe('HomeWeatherList', () => {
 
   it(`weather list has current city name`, () => {
     const $WEATHER_LiST = wrapper.findAll('[data-test="weather-list"]');
-    expect($WEATHER_LiST[0].find('[data-test="city-name"]').text()).toContain(
-      cityArray[0]
+    expect($WEATHER_LiST[0].find('[data-test="city-name"]').text()).toEqual(
+      '新竹縣'
     );
   });
 
   it(`weather list has current temperature`, () => {
     const $WEATHER_LiST = wrapper.findAll('[data-test="weather-list"]');
     expect($WEATHER_LiST[0].find('[data-test="weather-t"]').text()).toContain(
-      getWeatherValue(cityArray[0], 'T')
+      '21'
     );
   });
 
   it(`weather list has current wx`, () => {
     const $WEATHER_LiST = wrapper.findAll('[data-test="weather-list"]');
-    expect($WEATHER_LiST[0].find('[data-test="weather-wx"]').text()).toContain(
-      getWeatherValue(cityArray[0], 'Wx')
+    expect($WEATHER_LiST[0].find('[data-test="weather-wx"]').text()).toEqual(
+      '短暫雨'
     );
   });
 
   it(`weather list has current pop`, () => {
     const $WEATHER_LiST = wrapper.findAll('[data-test="weather-list"]');
     expect($WEATHER_LiST[0].find('[data-test="weather-pop"]').text()).toContain(
-      getWeatherValue(cityArray[0], 'PoP6h')
+      '30'
     );
   });
 
   it(`weather list has current weather picture`, () => {
     const $WEATHER_LiST = wrapper.findAll('[data-test="weather-list"]');
-    const wxValue = getWeatherValue(cityArray[0], 'Wx', 1);
     expect($WEATHER_LiST[0].find('[data-test="weather-pic"]').html()).toContain(
-      getWeatherPic(wxValue)
+      '08'
+    );
+    let status = 'day';
+    if (new Date().getHours() >= 18 || new Date().getHours() < 6) {
+      status = 'night';
+    }
+    expect($WEATHER_LiST[0].find('[data-test="weather-pic"]').html()).toContain(
+      status
     );
   });
 
