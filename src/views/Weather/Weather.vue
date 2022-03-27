@@ -1,7 +1,6 @@
 <script setup>
-import { defineProps, computed, onMounted } from 'vue';
+import { defineProps, computed } from 'vue';
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 import WeatherNowCard from '@/components/WeatherNowCard';
 import WeatherTreeDaysCard from '@/components/WeatherTreeDaysCard';
 import WeatherWeekCard from '@/components/WeatherWeekCard';
@@ -13,19 +12,9 @@ const props = defineProps({
   },
 });
 
-console.log(2);
-
 const { getters } = useStore();
-const router = useRouter();
 const cityData = computed(() => getters.getCityWeather(props.city));
 const cityWeekData = computed(() => getters.getCityWeekWeather(props.city));
-
-onMounted(() => {
-  console.log(3);
-  if (!props.city) {
-    router.push({ name: 'error' });
-  }
-});
 </script>
 
 <template>

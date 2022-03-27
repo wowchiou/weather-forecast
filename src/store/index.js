@@ -43,21 +43,29 @@ const createVuexStore = (initialState) => {
     },
 
     fetchWeatherForecast({ commit }) {
-      return Http.getWeatherForecast().then((res) => {
-        const newWeatherData = formateWeatherData(
-          res.data.records.locations[0].location
-        );
-        commit('SET_WEATHER_FORECAST', newWeatherData);
-      });
+      return Http.getWeatherForecast()
+        .then((res) => {
+          const newWeatherData = formateWeatherData(
+            res.data.records.locations[0].location
+          );
+          commit('SET_WEATHER_FORECAST', newWeatherData);
+        })
+        .catch((err) => {
+          throw err;
+        });
     },
 
     fetchWeekWeather({ commit }) {
-      return Http.getWeekWeather().then((res) => {
-        const newWeatherData = formateWeatherData(
-          res.data.records.locations[0].location
-        );
-        commit('SET_WEEK_WEATHER_FORECAST', newWeatherData);
-      });
+      return Http.getWeekWeather()
+        .then((res) => {
+          const newWeatherData = formateWeatherData(
+            res.data.records.locations[0].location
+          );
+          commit('SET_WEEK_WEATHER_FORECAST', newWeatherData);
+        })
+        .catch((err) => {
+          throw err;
+        });
     },
   };
 

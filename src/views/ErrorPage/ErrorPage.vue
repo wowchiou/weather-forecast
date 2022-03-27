@@ -1,12 +1,31 @@
-<script setup></script>
+<script setup>
+import { defineProps } from 'vue';
+
+defineProps({
+  message: {
+    type: String,
+  },
+});
+</script>
 
 <template>
   <div class="error flex justify-center items-center">
-    <h1 class="">Oops!Page not found!</h1>
-    <router-link :to="{ name: 'home' }">返回首頁</router-link>
+    <div class="font-bold">
+      <h1 class="text-4xl text-yellow-400 mt-10">Oops!Something went wrong!</h1>
+      <p v-if="!message" class="error-text">Page not found.</p>
+      <p v-else data-test="error-message" class="error-text">{{ message }}</p>
+      <router-link
+        class="mt-5 border-2 py-1 px-5 rounded-md"
+        :to="{ name: 'home' }"
+        >返回首頁</router-link
+      >
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 @import './ErrorPage.scss';
+.error-text {
+  @apply mt-5 text-3xl;
+}
 </style>

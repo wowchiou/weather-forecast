@@ -1,20 +1,26 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import AppHeader from '@/components/AppHeader';
 import AppLoader from '@/components/AppLoader';
 
+const router = useRouter();
 const { state, dispatch } = useStore();
 const loader = computed(() => state.loader);
 
 onMounted(() => {
-  console.log(1);
-  Promise.all([
-    dispatch('fetchWeatherForecast'),
-    dispatch('fetchWeekWeather'),
-  ]).finally(() => {
-    dispatch('showLoader', false);
-  });
+  Promise.all([dispatch('fetchWeatherForecast'), dispatch('fetchWeekWeather')])
+    .catch((err) => {
+      console.log(err);
+      router.push({
+        name: 'error',
+        params: { message: 'Network error, 請稍後再試！' },
+      });
+    })
+    .finally(() => {
+      dispatch('showLoader', false);
+    });
 });
 </script>
 

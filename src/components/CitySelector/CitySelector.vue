@@ -1,7 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { WEATHER_CITY } from '@/storage.js';
-import cities from '@/city.json';
+import CITY from '@/city.json';
 
 const router = useRouter();
 
@@ -27,7 +27,7 @@ function handleCityChange(e) {
     >
       <option value="">-- 請選擇城市 --</option>
       <option
-        v-for="city in cities"
+        v-for="city in CITY"
         :key="city"
         :value="city"
         data-test="city-options"
