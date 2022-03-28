@@ -20,7 +20,9 @@ const hasWeatherData = computed(
     <div class="mt-5">
       <CitySelector />
 
-      <p v-if="!hasWeatherData" class="empty-text">請選擇城市</p>
+      <p v-if="!hasWeatherData" data-test="empty-text" class="empty-text">
+        請選擇城市
+      </p>
       <HomeWeatherList v-else :isEdit="isEdit" />
     </div>
 

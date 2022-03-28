@@ -17,9 +17,6 @@ describe(`App`, () => {
     el.id = 'portal-loader';
     document.body.appendChild(el);
 
-    // jest.mock('@/store');
-    jest.clearAllMocks();
-
     store = createVuexStore();
     router = createRouter({
       history: createWebHashHistory(process.env.BASE_URL),
@@ -34,17 +31,8 @@ describe(`App`, () => {
   afterEach(() => {
     // clean up
     document.body.outerHTML = '';
+    jest.clearAllMocks();
   });
-
-  // it(`display home pag when getWeatherForecast call success`, async () => {
-  //   jest.spyOn(Http, 'getWeatherForecast').mockResolvedValueOnce();
-  //   jest.spyOn(Http, 'getWeekWeather').mockResolvedValueOnce();
-  //   wrapper = mount(App, {
-  //     global: { plugins: [store, router] },
-  //   });
-  //   await flushPromises();
-  //   expect(wrapper.vm.$route.name).toEqual('home');
-  // });
 
   it(`display error page when getWeatherForecast call fail`, async () => {
     jest.spyOn(Http, 'getWeatherForecast').mockRejectedValueOnce();

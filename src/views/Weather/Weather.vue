@@ -19,7 +19,11 @@ const cityWeekData = computed(() => getters.getCityWeekWeather(props.city));
 
 <template>
   <div class="weather text-center">
-    <div v-if="cityData && cityWeekData" class="relative z-10">
+    <div
+      v-if="cityData && cityWeekData"
+      data-test="card-wrapper"
+      class="relative z-10"
+    >
       <WeatherNowCard :city="city" />
       <WeatherTreeDaysCard :city="city" />
       <WeatherWeekCard :city="city" />

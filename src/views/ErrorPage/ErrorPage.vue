@@ -11,8 +11,12 @@ defineProps({
 <template>
   <div class="error flex justify-center items-center">
     <div class="font-bold">
-      <h1 class="text-4xl text-yellow-400 mt-10">Oops!Something went wrong!</h1>
-      <p v-if="!message" class="error-text">Page not found.</p>
+      <h1 data-test="error-title" class="text-4xl text-yellow-400 mt-10">
+        Oops!Something went wrong!
+      </h1>
+      <p v-if="!message" data-test="error-404" class="error-text">
+        Page not found.
+      </p>
       <p v-else data-test="error-message" class="error-text">{{ message }}</p>
       <router-link
         class="mt-5 border-2 py-1 px-5 rounded-md"
@@ -25,7 +29,4 @@ defineProps({
 
 <style lang="scss" scoped>
 @import './ErrorPage.scss';
-.error-text {
-  @apply mt-5 text-3xl;
-}
 </style>
