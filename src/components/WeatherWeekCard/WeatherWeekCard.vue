@@ -50,7 +50,7 @@ function getWeekWeatherData(dataName, timeIndex, valueIndex) {
           data-test="week-list"
           class="week-list"
         >
-          <p class="w-['30%'] text-left text-2xl">
+          <p class="w-28 text-left text-2xl">
             <span data-test="week-day">{{
               getDayStatus(time.startTime).day
             }}</span>
