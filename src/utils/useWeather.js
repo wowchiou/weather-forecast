@@ -21,6 +21,16 @@ export default function useWeather({ weatherForecast, weekWeatherForecast }) {
     return `${picURL}${timeText}/${picIndex}.svg`;
   }
 
+  function getWeatherTime(time) {
+    const date = new Date(time);
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+      hours: date.getHours(),
+    };
+  }
+
   function getDayStatus(time) {
     let status;
     const { earlyMorning, morning, night } = TIME_TEXT;
@@ -36,31 +46,6 @@ export default function useWeather({ weatherForecast, weekWeatherForecast }) {
     }
     return { day, status };
   }
-
-  function getTemperatureBar(max, min, timeIndex) {
-    const maxT = Math.max(
-      ...max.time.map((t) => Number(t.elementValue[0].value))
-    );
-    const minT = Math.min(
-      ...min.time.map((t) => Number(t.elementValue[0].value))
-    );
-    const currentMaxT = Number(max.time[timeIndex].elementValue[0].value);
-    const currentMinT = Number(min.time[timeIndex].elementValue[0].value);
-    const left = ((currentMinT - minT) / (maxT - minT)) * 100;
-    const width = ((currentMaxT - currentMinT) / (maxT - minT)) * 100;
-    return { left, width: width ? width : 10 };
-  }
-
-  function getWeatherTime(time) {
-    const date = new Date(time);
-    return {
-      year: date.getFullYear(),
-      month: date.getMonth() + 1,
-      day: date.getDate(),
-      hours: date.getHours(),
-    };
-  }
-
   function getWeatherValue(city, dataName, valueIndex) {
     if (!weatherForecast) return;
     const cityData = weatherForecast.find((itm) => itm.locationName === city);
@@ -99,6 +84,20 @@ export default function useWeather({ weatherForecast, weekWeatherForecast }) {
       (itm) => itm.locationName === city
     );
     return cityData.weatherElement[dataName];
+  }
+
+  function getTemperatureBar(max, min, timeIndex) {
+    const maxT = Math.max(
+      ...max.time.map((t) => Number(t.elementValue[0].value))
+    );
+    const minT = Math.min(
+      ...min.time.map((t) => Number(t.elementValue[0].value))
+    );
+    const currentMaxT = Number(max.time[timeIndex].elementValue[0].value);
+    const currentMinT = Number(min.time[timeIndex].elementValue[0].value);
+    const left = ((currentMinT - minT) / (maxT - minT)) * 100;
+    const width = ((currentMaxT - currentMinT) / (maxT - minT)) * 100;
+    return { left, width: width ? width : 10 };
   }
 
   return {
