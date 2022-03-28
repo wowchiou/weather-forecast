@@ -5,7 +5,7 @@ nodejs-version：v12.14.0
 使用 Vue 搭配中央氣象局-開放資料平台，製作台灣縣市的氣項查詢。
 
 技術：<br>
-Vue3、vue-cli4、vuex、scss、tailwind、unit-test(jest)
+Vue3、vue-cli4、vuex、scss、tailwind、unit-test(jest)、GsapJS
 
 網站：<br>
 https://wowchiou.github.io/weather-forecast/
