@@ -22,7 +22,8 @@ export const routes = [
       next();
     },
     props: true,
-    component: () => import(/* webpackChunkName: "about" */ '@/views/Weather'),
+    component: () =>
+      import(/* webpackChunkName: "weather" */ '@/views/Weather'),
   },
   {
     path: '/:pathMatch(.*)*',

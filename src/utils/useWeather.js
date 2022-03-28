@@ -22,7 +22,7 @@ export default function useWeather({ weatherForecast, weekWeatherForecast }) {
   }
 
   function getWeatherTime(time) {
-    const date = new Date(time);
+    const date = new Date(time.replace(/-/g, '/'));
     return {
       year: date.getFullYear(),
       month: date.getMonth() + 1,
