@@ -44,7 +44,8 @@ ul {
       background-repeat: no-repeat;
       filter: contrast(90%);
       opacity: 0.5;
-      animation: float-left 1000s infinite alternate linear;
+      background-position: left bottom;
+      // animation: float-left 1000s infinite alternate linear;
     }
   }
 }
