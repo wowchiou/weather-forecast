@@ -1,4 +1,6 @@
 import { mount } from '@vue/test-utils';
+import { createRouter, createWebHashHistory } from 'vue-router';
+import { routes } from '@/router';
 import ErrorPage from './ErrorPage.vue';
 
 let wrapper;
@@ -27,5 +29,18 @@ describe('ErrorPage', () => {
     expect(wrapper.find('[data-test="error-message"]').text()).toBe(
       'this is error message.'
     );
+  });
+
+  it(`click home button routes to home page`, async () => {
+    const router = createRouter({
+      history: createWebHashHistory(process.env.BASE_URL),
+      routes,
+    });
+    wrapper = mount(ErrorPage, {
+      global: { plugins: [router] },
+    });
+    await wrapper.find('[data-test="home-button"]').trigger('click');
+    await router.isReady();
+    expect(wrapper.vm.$route.name).toBe('home');
   });
 });

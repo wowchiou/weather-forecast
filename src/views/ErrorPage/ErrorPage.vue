@@ -19,6 +19,7 @@ defineProps({
       </p>
       <p v-else data-test="error-message" class="error-text">{{ message }}</p>
       <router-link
+        data-test="home-button"
         class="mt-5 border-2 py-1 px-5 rounded-md"
         :to="{ name: 'home' }"
         >返回首頁</router-link
